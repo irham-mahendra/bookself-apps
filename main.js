@@ -56,13 +56,13 @@ function generateId() {
   return +new Date();
 }
 
-function generateBookObject(id, title, author, year, isCompleted) {
+function generateBookObject(id, title, author, year, isComplete) {
   return {
     id,
     title,
     author,
-    year,
-    isCompleted,
+    year: parseInt(year),
+    isComplete,
   };
 }
 
@@ -78,6 +78,7 @@ function makeBook(bookObject) {
 
   const textContainer = document.createElement("article");
   textContainer.classList.add("book_item");
+
   textContainer.append(textTitle, textAuthor, textYear);
   textContainer.setAttribute("id", `todo-${bookObject.id}`);
 
@@ -91,7 +92,7 @@ function makeBook(bookObject) {
   const action = document.createElement("div");
   action.classList.add("action");
 
-  if (bookObject.isCompleted) {
+  if (bookObject.isComplete) {
     const undoButton = document.createElement("button");
     undoButton.classList.add("green");
     undoButton.innerText = "Belum Selesai Dibaca";
@@ -124,7 +125,7 @@ function addBookCompleted(bookId) {
     return;
   }
   swal("Buku Selesai Dibaca", "", "success");
-  bookTarget.isCompleted = true;
+  bookTarget.isComplete = true;
   document.dispatchEvent(new Event(RENDER_EVENT));
   saveDataBook();
 }
@@ -162,7 +163,7 @@ function removeBookFromCompleted(bookId) {
 function undoBookFromCompleted(bookId) {
   const bookTarget = findBook(bookId);
   if (bookTarget == null) return;
-  bookTarget.isCompleted = false;
+  bookTarget.isComplete = false;
   swal("Buku belum selesai dibaca", "", "info");
   document.dispatchEvent(new Event(RENDER_EVENT));
   saveDataBook();
@@ -228,7 +229,7 @@ document.addEventListener(RENDER_EVENT, function () {
 
   for (const bookItem of books) {
     const bookElement = makeBook(bookItem);
-    if (!bookItem.isCompleted) {
+    if (!bookItem.isComplete) {
       uncompletedBookList.append(bookElement);
     } else {
       completeBookshelfList.append(bookElement);
